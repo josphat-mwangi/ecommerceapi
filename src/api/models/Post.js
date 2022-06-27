@@ -1,43 +1,40 @@
 const mongoose = require('mongoose');
-
+const objectID = mongoose.Schema.Types.ObjectId
 
 const PostSchema = mongoose.Schema({
     productName:{
         type: String,
-        require: true,
+        required: true,
     },
     category:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "categorySchema",
-        require: true
+        type: objectID,
+        ref: "Cartegory",
+        required: true
     },
     noOfItems:{
         type: Number,
-        require: true,
+        required: true,
     },
     quantity:{
         type: String,
+        required: true,
     },
-    imageUrl:{
-        type: String,
-        require: true
-    },
-    description: {
-        type: String,
-        require: true,
-    },
+    // imageUrl:{
+    //     type: String,
+    //     required: true
+    // },
     unitPrice:{
         type: Number,
-        require: true
+        required: true
     },
     unitPriceCurrency:{
         type: String,
-        require: true
+        required: true
     },
     author:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "userSchema",
-        require: true
+        type: objectID,
+        ref: "User",
+        required: true
     },
    
 },
@@ -45,4 +42,4 @@ const PostSchema = mongoose.Schema({
 );
 
 
-module.exports = mongoose.model('Post', PostSchema)
+module.exports = mongoose.model('Products', PostSchema)
