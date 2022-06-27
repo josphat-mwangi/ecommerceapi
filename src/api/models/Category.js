@@ -6,15 +6,14 @@ const categorySchema = mongoose.Schema({
         require: true,
         unique: true
     },
-    Createdby:{
+    createdby:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'userSchema',
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
     }
-})
+    
+},
+{ timestamps: true}
+)
 
 
 module.exports = mongoose.model('Category', categorySchema)
