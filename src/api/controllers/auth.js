@@ -1,0 +1,88 @@
+const { registrationValidation, loginValidation} = require('../validations/authvalidation')
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+
+
+const register = async(req, res)=>{
+    //validating user inputs
+    const {error} = registrationValidation(req.body);
+
+    // if error exists then send back error
+    if(error){
+        return res.status(400).send(error.details[0].message);
+    }
+
+    //checking if email exists
+    const emailExist = await User.findOne({email:req.body.email});
+    // if email exist then return 
+    if(emailExist) return res.status(400).send("Email already exist");
+
+    //hash password
+    const salt = await bcrypt.genSalt(10);
+    
+    const hashPassword = await bcrypt.hash(req.body.password, salt);
+    const hashCPassword = await bcrypt.hash(req.body.repeat_password, salt);
+
+    const user = new User({
+        ...req.body,
+        password: hashPassword,
+        repeat_password: hashCPassword
+    });
+
+     
+    try{
+        const saveUser = await user.save();
+        // create token
+        const token = jwt.sign({user_id: user._id}, process.env.TOKEN_SECRET,{
+            expiresIn: "5h"
+        });
+
+        res.status(200).send({token, saveUser})
+        
+    }catch(err){
+        res.status(500).send(err);
+    }
+
+};
+
+
+const login = async(req, res)=>{
+    // validating user input
+    const { error } = loginValidation(req.body);
+
+    // throw error if any
+    if(error){
+        return res.status(400).send(error.details[0].message);
+    }
+
+    //checking if email exists
+    const user = await User.findOne({ email: req.body.email});
+    if(!user) return res.status(400).send("Incorrect Email");
+ 
+    // verifying password
+    const validPassword = await bcrypt.compare(req.body.password, user.password || usernameExist.password);
+    if(!validPassword) return res.status(400).send("Incorrect Password");
+
+    // create token
+    const token = jwt.sign({user_id: user._id}, process.env.TOKEN_SECRET,{
+        expiresIn: "5h"
+    });
+    res.header('auth-token', token).send(token);
+
+};
+
+const logout =  async(req, res)=>{
+    const authHeader = req.headers["authorization"];
+
+    jwt.sign(authHeader, "", { expiresIn: 1}, (logout, err)=>{
+        if(logout){
+            res.send({msg : "Successfully logged out"})
+        }else{
+            res.send({msg: "Error"})
+        }
+    })
+};
+
+
+module.exports = { register, login, logout}
