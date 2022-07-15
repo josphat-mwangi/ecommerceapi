@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const objectID = mongoose.Schema.Types.ObjectId
 
+
 const PostSchema = mongoose.Schema({
+    
     productName:{
         type: String,
         required: true,

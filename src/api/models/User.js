@@ -1,3 +1,4 @@
+const { string } = require('@hapi/joi');
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
@@ -30,13 +31,21 @@ const userSchema = mongoose.Schema({
         min: 8,
         max: 1024,
     },
-
     isAdmin: {
         type: Boolean,
         default: false
-    }
+    },
+    
+    tokens: [{
+      token: {
+      type: String,
+      required: true
+        }
+    }]
 },
     { timestamps: true}
 );
+
+
 
 module.exports = mongoose.model('User', userSchema)
