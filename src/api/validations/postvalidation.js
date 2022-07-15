@@ -9,7 +9,7 @@ const postValidation = (data) =>{
         quantity: joi.string().required(),
         unitPrice: joi.number().integer().positive().required(),
         unitPriceCurrency: joi.string().required(),
-        author: joi.string().required()
+       
 
 
     });
